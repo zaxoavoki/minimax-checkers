@@ -118,6 +118,8 @@ export function computeMove(moveFrom, moveToWithFlag, state) {
     if (obligatoryMoves.length === 0) {
       newState.turn = turn === 0 ? 1 : 0;
       previousMoves[newState.turn] = [];
+    } else {
+      return newState;
     }
   } else {
     newState.turn = turn === 0 ? 1 : 0;
@@ -152,6 +154,12 @@ export function getAllByColor(state, color) {
     }
   }
   return checkers;
+}
+
+export function isEnd(state) {
+  const black = getAllByColor(state, CheckerColor.BLACK);
+  const white = getAllByColor(state, CheckerColor.WHITE);
+  return white.length === 0 || black.length === 0;
 }
 
 export function hasAnyQueen(state) {

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { CheckerColor, PlayerType } from "./types";
-import { Grid, GridItem, Checker, StyledWrapper } from "./styled";
+import { ReactComponent as Icon } from "./assets/crown.svg";
+import { Grid, GridItem, Checker, StyledWrapper, StyledButton } from "./styled";
 import {
   arrayContains,
   computeMove,
@@ -8,10 +9,11 @@ import {
   getPlayersColor,
   getPossibleMoves,
   hasAnyQueen,
+  isEnd,
   isLooping,
 } from "./utils/helpers";
 import config from "./config";
-import { minimax, minimaxWithPrunning } from "./utils/bot";
+import { minimaxWithPrunning } from "./utils/bot";
 
 export const previousMoves = {
   0: [],
@@ -52,10 +54,7 @@ function App() {
       state.turn
     );
 
-    // const { move } = minimax(0, true, state, config.MAX_DEPTH, state.turn);
-
     if (!move) {
-      console.log(state.turn ^ 1, 'is winner')
       return setState((p) => ({ ...p, ended: true }));
     }
 
@@ -68,6 +67,9 @@ function App() {
     }
 
     const newState = computeMove(moveFrom, moveTo, state);
+    if (isEnd(newState)) {
+      return setState({ ...newState, ended: true });
+    }
     setState(newState);
   }
 
@@ -131,8 +133,21 @@ function App() {
   }
 
   function move(cell) {
-    const computedMove = computeMove(activeCell.active, cell, state);
-    setState(computedMove);
+    const newState = computeMove(activeCell.active, cell, state);
+    if (isEnd(newState)) {
+      setState({ ...newState, ended: true });
+    } else {
+      setState(newState);
+    }
+  }
+
+  function handleReset() {
+    setState({
+      grid: config.INITIAL_FIELD,
+      turn: config.INITIAL_TURN,
+      started: false,
+      ended: false,
+    });
   }
 
   return (
@@ -158,18 +173,24 @@ function App() {
                 <Checker
                   queen={v.isQueen}
                   white={v.color === CheckerColor.WHITE}
-                />
+                >
+                  {v.isQueen && <Icon />}
+                </Checker>
               )}
             </GridItem>
           ))
         )}
       </Grid>
       {state.ended && (
-        <h4 style={{ textAlign: "center " }}>The game has been ended</h4>
+        <h2 style={{ textAlign: "center" }}>
+          The game has been ended, {getPlayersColor(state.turn ^ 1)[0]} won!
+        </h2>
       )}
-      <button onClick={handleStart} style={{ width: "100px", margin: "auto" }}>
-        Start game
-      </button>
+      <StyledButton
+        onClick={() => (state.started ? handleReset() : handleStart())}
+      >
+        {state.started ? "Reset" : "Start"} game
+      </StyledButton>
     </StyledWrapper>
   );
 }

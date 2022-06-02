@@ -1,7 +1,7 @@
 import { CheckerColor } from "./types";
 
 const config = {
-  MAX_DEPTH: [1, 2],
+  MAX_DEPTH: [3, 3],
   INITIAL_TURN: 0,
   INITIAL_FIELD: Array(8)
     .fill(0)
