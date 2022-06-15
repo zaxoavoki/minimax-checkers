@@ -117,13 +117,12 @@ export function computeMove(moveFrom, moveToWithFlag, state) {
     const obligatoryMoves = possibleMoves.filter(([, , hasToBit]) => hasToBit);
     if (obligatoryMoves.length === 0) {
       newState.turn = turn === 0 ? 1 : 0;
-      previousMoves[newState.turn] = [];
     } else {
+      previousMoves[newState.turn] = [];
       return newState;
     }
   } else {
     newState.turn = turn === 0 ? 1 : 0;
-    previousMoves[newState.turn] = [];
   }
 
   if ((toX === 7 && turn === 0) || (toX === 0 && turn === 1)) {

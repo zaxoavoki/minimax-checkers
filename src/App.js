@@ -1,7 +1,14 @@
 import { useEffect, useState } from "react";
 import { CheckerColor, PlayerType } from "./types";
 import { ReactComponent as Icon } from "./assets/crown.svg";
-import { Grid, GridItem, Checker, StyledWrapper, StyledButton } from "./styled";
+import {
+  Grid,
+  GridItem,
+  Checker,
+  StyledWrapper,
+  StyledButton,
+  StyledContainer,
+} from "./styled";
 import {
   arrayContains,
   computeMove,
@@ -186,11 +193,51 @@ function App() {
           The game has been ended, {getPlayersColor(state.turn ^ 1)[0]} won!
         </h2>
       )}
-      <StyledButton
-        onClick={() => (state.started ? handleReset() : handleStart())}
-      >
-        {state.started ? "Reset" : "Start"} game
-      </StyledButton>
+      {(!state.started || state.ended) && (
+        <>
+          {!state.ended && (
+            <StyledContainer>
+              <div>
+                <input
+                  type="checkbox"
+                  id="playerA"
+                  value={players[0]}
+                  onChange={(e) =>
+                    setPlayers((p) => [
+                      e.target.checked
+                        ? PlayerType.PERSON
+                        : PlayerType.COMPUTER,
+                      p[1],
+                    ])
+                  }
+                />
+                <label htmlFor="playerA">White - {players[0]}</label>
+              </div>
+              <div>
+                <input
+                  type="checkbox"
+                  id="playerB"
+                  value={players[1]}
+                  onChange={(e) =>
+                    setPlayers((p) => [
+                      p[0],
+                      e.target.checked
+                        ? PlayerType.PERSON
+                        : PlayerType.COMPUTER,
+                    ])
+                  }
+                />
+                <label htmlFor="playerB">Black - {players[1]}</label>
+              </div>
+            </StyledContainer>
+          )}
+          <StyledButton
+            onClick={() => (state.started ? handleReset() : handleStart())}
+          >
+            {state.started ? "Reset" : "Start"} game
+          </StyledButton>
+        </>
+      )}
     </StyledWrapper>
   );
 }

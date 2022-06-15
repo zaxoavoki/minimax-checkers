@@ -63,3 +63,13 @@ export const StyledButton = styled.button`
     left: 5px;
   }
 `;
+
+export const StyledContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-bottom: 15px;
+
+  > div {
+    padding: 0 10px;
+  }
+`;
